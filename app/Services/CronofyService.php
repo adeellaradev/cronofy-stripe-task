@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 
 class CronofyService
 {
+    // Cronofy Service 
     private $baseUrl;
     private $clientId;
     private $clientSecret;

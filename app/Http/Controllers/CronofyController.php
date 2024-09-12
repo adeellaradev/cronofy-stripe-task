@@ -10,7 +10,7 @@ use Inertia\Inertia;
 class CronofyController extends Controller
 {
     protected $cronofyService;
-
+    //Calling Cronofy Service 
     public function __construct(CronofyService $cronofyService)
     {
         $this->cronofyService = $cronofyService;
