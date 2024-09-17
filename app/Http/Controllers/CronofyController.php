@@ -27,12 +27,18 @@ class CronofyController extends Controller
             $user = Auth::user();
             $accessToken = $user->cronofy_access_token;
             $calendars = $this->cronofyService->getCalendars($accessToken);
-            $calendarId = $calendars['calendars'][0]['calendar_id'];
-            $events = $this->cronofyService->getEvents($accessToken, $calendarId);
+            
+            $calendarList = array_map(function($calendar) {
+                return [
+                    'calendar_id' => $calendar['calendar_id'],
+                    'calendar_name' => $calendar['calendar_name'],
+                    'provider' => $calendar['provider_name'],
+                ];
+            }, $calendars['calendars']);
             return response()->json([
-                'calendars' => $calendars,
-                'events' => $events['events'],
+                'calendars' => $calendarList,
             ]);
+            
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

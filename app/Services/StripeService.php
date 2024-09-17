@@ -87,11 +87,20 @@ class StripeService
             $invoices = $this->stripe->invoices->all([
                 'customer' => $user->stripe_id,
                 'limit' => 1,
-            ]);
-            $lastInvoice = $invoices->data[0] ?? null;
-            return $lastInvoice
-                ? ['success' => true, 'invoice' => $lastInvoice]
-                : ['success' => false, 'error' => 'No invoices found.'];
+            ]); 
+            if (count($invoices->data) > 0) {
+                $lastInvoice = $invoices->data[0];  
+                return [
+                    'success' => true, 
+                    'invoice' => $lastInvoice
+                ];
+            } else {
+                
+                return [
+                    'success' => true, 
+                    'invoice' => null,  
+                ];
+            } 
         } catch (Exception $e) {
             return ['success' => false, 'error' => 'Failed to fetch last payment from Stripe: ' . $e->getMessage()];
         }
@@ -127,4 +136,40 @@ class StripeService
             throw new Exception('Failed to create setup intent: ' . $e->getMessage());
         }
     }
+
+    public function getUserSubscriptionDetails($user)
+    {
+        try {
+            $subscriptions = $this->stripe->subscriptions->all([
+                'customer' => $user->stripe_id,
+                'status' => 'active',
+            ]);
+
+            if (empty($subscriptions->data)) {
+                return ['success' => false, 'message' => 'No active subscriptions found for this user.'];
+            }
+
+            $subscriptionDetails = [];
+            foreach ($subscriptions->data as $subscription) {
+                foreach ($subscription->items->data as $item) {
+                    $subscriptionDetails[] = [
+                        'id' => $subscription->id,
+                        'amount' => number_format($item->price->unit_amount / 100, 2),  // Convert amount from cents to dollars
+                        'currency' => strtoupper($item->price->currency),
+                        'start_date' => date('Y-m-d', $subscription->current_period_start),
+                        'end_date' => date('Y-m-d', $subscription->current_period_end),
+                        'status' => $subscription->status,
+                        'product' => $this->stripe->products->retrieve($item->price->product, []),
+                    ];
+                }
+            }
+
+            return ['success' => true, 'subscriptions' => $subscriptionDetails];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => 'Failed to fetch subscription details: ' . $e->getMessage()];
+        }
+    }
+
+
+
 }

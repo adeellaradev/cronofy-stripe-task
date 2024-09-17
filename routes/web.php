@@ -45,6 +45,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/stripe/payments', [StripeController::class, 'stripePayments'])->name('stripe.payments');
     Route::get('/stripe/invoices', [StripeController::class, 'stripeInvoices'])->name('stripe.invoices');
     Route::get('/stripe/recent/payment', [StripeController::class, 'stripeLastPayment'])->name('stripe.recent.payment'); 
+    Route::get('/stripe/subscription/details', [StripeController::class, 'fetchUserSubscription'])->name('stripe.subscription.details'); 
+
     Route::get('/stripe/plans', [StripeController::class, 'stripePlans'])->name('stripe.plans'); 
     Route::get('/fetch/plans', [StripeController::class, 'fetchPlans'])->name('fetch.plans');
     Route::post('/stripe/subscribe', [StripeController::class, 'subscribeToPlan']); 

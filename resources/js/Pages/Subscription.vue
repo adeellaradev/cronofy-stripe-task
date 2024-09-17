@@ -6,7 +6,7 @@ import GetEvents from '../Components/GetUserEvents.vue';
 
 import StripeProfile from '@/Components/StripeProfile.vue';
 import StripePaymentDetails from '@/Components/StripePaymentDetails.vue';
-
+import StripeSubscriptionDetails from '@/Components/StripeSubscriptionDetails.vue';
 
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
@@ -85,6 +85,12 @@ import { Inertia } from '@inertiajs/inertia';
                 <div class="mb-3 bg-white overflow-hidden shadow-sm sm:rounded-lg" v-if="$page.props.auth.user.stripe_id ">    
                     <div class="text-center  p-6 text-gray-900 d-flex">  
                         <StripePaymentDetails > </StripePaymentDetails>
+                    </div> 
+                </div>  
+
+                <div class="mb-3 bg-white overflow-hidden shadow-sm sm:rounded-lg" v-if="$page.props.auth.user.stripe_id ">    
+                    <div class="text-center  p-6 text-gray-900 d-flex">  
+                        <StripeSubscriptionDetails > </StripeSubscriptionDetails>
                     </div> 
                 </div>  
 

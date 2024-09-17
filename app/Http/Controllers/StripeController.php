@@ -93,4 +93,17 @@ class StripeController extends Controller
 
         return response()->json($result, $result['success'] ? 200 : 500);
     }
+
+    public function stripeSubscriptions(){
+        
+    }
+
+    public function fetchUserSubscription()
+    {
+        $user = Auth::user();
+        $subscriptionDetails = $this->stripeService->getUserSubscriptionDetails($user);  
+        return response()->json($subscriptionDetails);
+    }
+    
+
 }
